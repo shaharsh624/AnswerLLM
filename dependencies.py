@@ -53,7 +53,7 @@ def validate_email(email):
 
 
 def validate_username(username):
-    pattern = "^[a-zA-Z0-9]*$"
+    pattern = "^[a-zA-Z0-9_]*$"
     if re.match(pattern, username):
         return True
     return False
@@ -85,7 +85,7 @@ def sign_up():
                                         hashed_password = stauth.Hasher(
                                             [password2]
                                         ).generate()
-                                        insert_user(email, username, hashed_password[0])
+                                        insert_user(email, username.lower(), hashed_password[0])
                                         st.success("Account created successfully!!")
                                         st.balloons()
                                     else:

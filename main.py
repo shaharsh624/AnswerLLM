@@ -40,6 +40,8 @@ try:
         cookie_expiry_days=4,
     )
 
+    st.title("LLM Project")
+
     email, authentication_status, username = authenticator.login(
         ":green[Login]", "main"
     )
