@@ -54,7 +54,7 @@ try:
             if authentication_status:
                 username = username[0].upper() + username[1:]
                 # MAIN APP
-                st.sidebar.subheader(f"Welcome {username}")
+                st.sidebar.subheader(f"Welcome {username.upper()}")
                 authenticator.logout("Log Out", "sidebar")
 
                 # Actions
