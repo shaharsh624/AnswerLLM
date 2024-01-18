@@ -103,10 +103,7 @@ def sign_up():
             else:
                 st.warning("Invalid Email")
 
-        btn1, btn2, btn3, btn4, btn5 = st.columns(5)
-
-        with btn3:
-            st.form_submit_button("Sign Up")
+        st.form_submit_button("Sign Up")
 
 
 # PROJECTS

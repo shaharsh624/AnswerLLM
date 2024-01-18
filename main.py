@@ -40,8 +40,6 @@ try:
         cookie_expiry_days=4,
     )
 
-    st.title("LLM Project")
-
     email, authentication_status, username = authenticator.login(
         ":green[Login]", "main"
     )
@@ -87,7 +85,6 @@ try:
 
                         if st.form_submit_button("Create Project"):
                             insert_project(email, project_name, project_desc)
-                            # Add any additional processing or logic here if needed
                             st.write("Project created successfully!")
                 else:
                     st.title(page)
@@ -95,7 +92,7 @@ try:
 
                     # Upload Files
                     with st.form(key="add_file", clear_on_submit=True):
-                        st.subheader("Create new File")
+                        st.subheader("Upload new File")
                         file_name = st.text_input(
                             ":blue[File Name]", placeholder="Enter File Name"
                         )
