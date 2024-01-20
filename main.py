@@ -10,9 +10,10 @@ from dependencies import (
     insert_file,
 )
 import traceback
+from langchain_helper import get_qa_chain
 
 st.set_page_config(
-    page_title="Streamlit Auth", page_icon=":lock:", )
+    page_title="Streamlit Auth", page_icon=":lock:", layout="wide")
 
 try:
     users = fetch_users()
@@ -107,16 +108,22 @@ try:
                     files = get_files(email, page)
                     if files:
                         file_names = [x.replace(',', '.') for x in list(files.keys())]
-                        file_selected = st.selectbox("Choose to view files", file_names)
-                        array = []
+                        for file in file_names:
+                            with st.expander(label=file):
+                                col1, col2 = st.columns([2, 1], gap="medium")
+                                with col1:
+                                    df = pd.DataFrame(files[file.replace('.', ',')])
+                                    st.write(df)
+                                with col2:
+                                    st.subheader("Questionnaires")
+                                    question = st.text_input("Question: ", key=page+"-"+file)
 
-                        st.subheader(file_selected)
-                        for file in files[file_selected.replace('.', ',')]:
-                            array.append(file)
-                        df = pd.DataFrame(array)
-                        st.write(df)
-                        st.markdown("---")
+                                    if question:
+                                        chain = get_qa_chain()
+                                        response = chain(question)
 
+                                        st.subheader("Answer")
+                                        st.write(response["result"])
 
             elif not authentication_status:
                 with info:

@@ -6,6 +6,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
+from langchain_helper import create_vector_db
 
 import pandas as pd
 
@@ -138,6 +139,7 @@ def insert_file(email, project_name, file_name, file):
     if file is not None and file.name.endswith(".csv"):
         try:
             df = pd.read_csv(file, encoding="latin-1")
+            create_vector_db(df)
             data = df.to_dict("records")
             db.update_one(
                 {"email": email},
