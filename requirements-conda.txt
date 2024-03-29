@@ -1,0 +1,5 @@
+streamlit==1.30.0
+streamlit_authenticator==0.2.3
+pandas==2.1.4
+pymongo==4.6.1
+python-dotenv==1.0.0

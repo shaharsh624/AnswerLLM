@@ -1,6 +1,6 @@
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders.dataframe import DataFrameLoader
+from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
@@ -23,8 +23,8 @@ def initialise():
     return vectordb_file_path, instructor_embeddings
 
 
-def create_vector_db():
-    df = pd.read_csv("codebasics_faqs.csv")
+def create_vector_db(df):
+    df = df
 
     # Load data from FAQ sheet
     loader = DataFrameLoader(df, page_content_column="prompt")
