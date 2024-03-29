@@ -6,6 +6,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
+from langchain_helper import create_vector_db
 
 import pandas as pd
 
@@ -85,7 +86,9 @@ def sign_up():
                                         hashed_password = stauth.Hasher(
                                             [password2]
                                         ).generate()
-                                        insert_user(email, username.lower(), hashed_password[0])
+                                        insert_user(
+                                            email, username.lower(), hashed_password[0]
+                                        )
                                         st.success("Account created successfully!!")
                                         st.balloons()
                                     else:
@@ -134,10 +137,11 @@ def get_files(email, project_name):
 
 
 def insert_file(email, project_name, file_name, file):
-    file_name = file_name.replace('.', ',')
+    file_name = file_name.replace(".", ",")
     if file is not None and file.name.endswith(".csv"):
         try:
             df = pd.read_csv(file, encoding="latin-1")
+            create_vector_db(df)
             data = df.to_dict("records")
             db.update_one(
                 {"email": email},
