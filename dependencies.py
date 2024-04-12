@@ -136,13 +136,14 @@ def get_files(email, project_name):
         return "Project not found"
 
 
-def insert_file(email, project_name, file_name, file):
-    file_name = file_name.replace(".", ",")
+def insert_file(email, project_name, file_name_original, file):
+    file_name = file_name_original.replace(".", ",")
     if file is not None and file.name.endswith(".csv"):
         try:
             df = pd.read_csv(file, encoding="latin-1")
-            create_vector_db(df)
             data = df.to_dict("records")
+
+            # Saving to MongoDB
             db.update_one(
                 {"email": email},
                 {
@@ -152,7 +153,15 @@ def insert_file(email, project_name, file_name, file):
                     }
                 },
             )
-            st.write("File uploaded successfully!")
+
+            # Saving locally
+            directory = os.path.join("data", project_name)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            file_path = os.path.join(directory, file_name_original)
+            df.to_csv(file_path, index=False)
+
+            create_vector_db(project_name, file_name_original)
         except Exception as e:
             st.error(f"Error during upload: {str(e)}")
     else:

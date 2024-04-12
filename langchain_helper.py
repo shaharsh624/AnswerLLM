@@ -1,52 +1,50 @@
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import DataFrameLoader
-from langchain_community.embeddings import HuggingFaceInstructEmbeddings
+from langchain_community.document_loaders.csv_loader import CSVLoader
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+import pandas as pd
 import os
 from dotenv import load_dotenv
-import pandas as pd
 
 load_dotenv()
 
-llm = GoogleGenerativeAI(model="gemini-pro", temperature=0.1)
+llm = GoogleGenerativeAI(model="gemini-pro", temperature=0.9)
 
 
 def initialise():
-    vectordb_file_path = "faiss_index"
-
-    instructor_embeddings = HuggingFaceInstructEmbeddings(
-        model_name="hkunlp/instructor-large"
-    )
-
-    return vectordb_file_path, instructor_embeddings
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    return embeddings
 
 
-def create_vector_db(df):
-    df = df
+# TODO: SAVE the csv file taken from Streamlit
 
-    # Load data from FAQ sheet
-    loader = DataFrameLoader(df, page_content_column="prompt")
+
+def create_vector_db(project, file_name):
+
+    file_path = os.path.join("data", project, file_name)
+
+    file_name = file_name.replace(".csv", "") + "-faiss_index"
+    vectordb_file_path = os.path.join("data", project, file_name)
+
+    loader = CSVLoader(file_path=file_path)
     data = loader.load()
 
-    vectordb_file_path, instructor_embeddings = initialise()
-
-    # Create a FAISS instance for vector database from 'data'
-    vectordb = FAISS.from_documents(documents=data, embedding=instructor_embeddings)
-
-    # Save vector database locally
+    embeddings = initialise()
+    vectordb = FAISS.from_documents(documents=data, embedding=embeddings)
     vectordb.save_local(vectordb_file_path)
 
 
-def get_qa_chain():
-    vectordb_file_path, instructor_embeddings = initialise()
+def get_qa_chain(project, file_name):
+    file_name = file_name.replace(".csv", "") + "-faiss_index"
+    vectordb_file_path = os.path.join("data", project, file_name)
 
-    # Load the vector database from the local folder
-    vectordb = FAISS.load_local(vectordb_file_path, instructor_embeddings)
-
-    # Create a retriever for querying the vector database
-    retriever = vectordb.as_retriever(score_threshold=0.7)
+    embeddings = initialise()
+    vectordb = FAISS.load_local(
+        vectordb_file_path, embeddings, allow_dangerous_deserialization=True
+    )
+    retriever = vectordb.as_retriever(score_threshold=0.3)
 
     prompt_template = """Given the following context and a question, generate an answer based on this context only.
     In the answer try to provide as much text as possible from "response" section in the source document context without making much changes.
@@ -73,6 +71,6 @@ def get_qa_chain():
 
 
 if __name__ == "__main__":
-    # create_vector_db()
+    file_path = "codebasics_faqs.csv"
+    # create_vector_db(file_path)
     chain = get_qa_chain()
-    print(chain("Do you have javascript course?")["result"])

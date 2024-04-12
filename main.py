@@ -12,8 +12,7 @@ from dependencies import (
 import traceback
 from langchain_helper import get_qa_chain
 
-st.set_page_config(
-    page_title="Streamlit Auth", page_icon=":lock:", layout="wide")
+st.set_page_config(page_title="Streamlit Auth", page_icon=":lock:", layout="wide")
 
 try:
     users = fetch_users()
@@ -95,10 +94,12 @@ try:
                     with st.form(key="add_file", clear_on_submit=True):
                         st.subheader("Upload new File")
                         file_name = st.text_input(
-                            ":blue[File Name]", placeholder="Enter File Name"
+                            ":blue[Give your file a name]",
+                            placeholder="Enter File Name",
                         )
                         file = st.file_uploader(
-                            ":blue[Choose a file to upload]", type=["csv", "json", "txt"]
+                            ":blue[Choose a file to upload]",
+                            type=["csv", "json", "txt"],
                         )
 
                         if st.form_submit_button("Add File"):
@@ -107,19 +108,21 @@ try:
                     # View Files
                     files = get_files(email, page)
                     if files:
-                        file_names = [x.replace(',', '.') for x in list(files.keys())]
+                        file_names = [x.replace(",", ".") for x in list(files.keys())]
                         for file in file_names:
                             with st.expander(label=file):
                                 col1, col2 = st.columns([2, 1], gap="medium")
                                 with col1:
-                                    df = pd.DataFrame(files[file.replace('.', ',')])
+                                    df = pd.DataFrame(files[file.replace(".", ",")])
                                     st.write(df)
                                 with col2:
                                     st.subheader("Questionnaires")
-                                    question = st.text_input("Question: ", key=page+"-"+file)
+                                    question = st.text_input(
+                                        "Question: ", key=page + "-" + file
+                                    )
 
                                     if question:
-                                        chain = get_qa_chain()
+                                        chain = get_qa_chain(page, file_name)
                                         response = chain(question)
 
                                         st.subheader("Answer")

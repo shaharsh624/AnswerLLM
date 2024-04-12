@@ -2,3 +2,5 @@
 .idea
 llm-project
 __pycache__
+envanswerllm/
+data/
