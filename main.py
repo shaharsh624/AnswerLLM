@@ -11,6 +11,7 @@ from dependencies import (
 )
 import traceback
 from langchain_helper import get_qa_chain
+from langchain_helper import get_qa_chain
 
 st.set_page_config(page_title="Streamlit Auth", page_icon=":lock:", layout="wide")
 

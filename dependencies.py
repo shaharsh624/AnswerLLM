@@ -7,6 +7,7 @@ import streamlit_authenticator as stauth
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
 from langchain_helper import create_vector_db
+from langchain_helper import create_vector_db
 
 import pandas as pd
 
@@ -89,6 +90,9 @@ def sign_up():
                                         insert_user(
                                             email, username.lower(), hashed_password[0]
                                         )
+                                        insert_user(
+                                            email, username.lower(), hashed_password[0]
+                                        )
                                         st.success("Account created successfully!!")
                                         st.balloons()
                                     else:
@@ -136,11 +140,16 @@ def get_files(email, project_name):
         return "Project not found"
 
 
+def insert_file(email, project_name, file_name, file):
+    file_name = file_name.replace(".", ",")
+
+
 def insert_file(email, project_name, file_name_original, file):
     file_name = file_name_original.replace(".", ",")
     if file is not None and file.name.endswith(".csv"):
         try:
             df = pd.read_csv(file, encoding="latin-1")
+            create_vector_db(df)
             data = df.to_dict("records")
 
             # Saving to MongoDB
