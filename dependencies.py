@@ -140,8 +140,8 @@ def get_files(email, project_name):
         return "Project not found"
 
 
-def insert_file(email, project_name, file_name, file):
-    file_name = file_name.replace(".", ",")
+# def insert_file(email, project_name, file_name, file):
+#     file_name = file_name.replace(".", ",")
 
 
 def insert_file(email, project_name, file_name_original, file):
@@ -149,7 +149,6 @@ def insert_file(email, project_name, file_name_original, file):
     if file is not None and file.name.endswith(".csv"):
         try:
             df = pd.read_csv(file, encoding="latin-1")
-            create_vector_db(df)
             data = df.to_dict("records")
 
             # Saving to MongoDB

@@ -11,7 +11,6 @@ from dependencies import (
 )
 import traceback
 from langchain_helper import get_qa_chain
-from langchain_helper import get_qa_chain
 
 st.set_page_config(page_title="Streamlit Auth", page_icon=":lock:", layout="wide")
 
@@ -65,7 +64,25 @@ try:
                 page = st.sidebar.selectbox("Choose a page", pages)
 
                 if page == "Home":
-                    st.subheader("This is the home page")
+                    st.markdown(
+                        """
+                        # Welcome to AnswerLLM
+
+AnswerLLM is a sophisticated Question and Answer system that leverages pre-learned question-answer pairs to provide accurate and relevant responses to user queries. It is designed to offer quick and reliable information retrieval for various applications.
+
+## Features
+
+-   **Pre-Learned Question-Answers**: Utilizes a database of pre-learned question-answer pairs to answer queries efficiently.
+-   **High Accuracy**: Designed to deliver highly accurate answers based on the trained dataset.
+
+-   **User Authentication**: Secure user authentication to manage access and user interactions.
+
+-   **Scalable Architecture**: Built to handle multiple queries simultaneously with a robust backend.
+
+-   **User-Friendly Interface**: Provides a clean and intuitive user interface for easy interaction.
+
+                        """
+                    )
                     st.markdown(
                         """
                         ---
@@ -123,7 +140,7 @@ try:
                                     )
 
                                     if question:
-                                        chain = get_qa_chain(page, file_name)
+                                        chain = get_qa_chain(page, file)
                                         response = chain(question)
 
                                         st.subheader("Answer")

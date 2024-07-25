@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = GoogleGenerativeAI(model="gemini-pro", temperature=0.9)
+llm = GoogleGenerativeAI(model="gemini-pro", temperature=0.7)
 
 
 def initialise():
@@ -37,8 +37,9 @@ def create_vector_db(project, file_name):
 
 
 def get_qa_chain(project, file_name):
-    file_name = file_name.replace(".csv", "") + "-faiss_index"
-    vectordb_file_path = os.path.join("data", project, file_name)
+    file = file_name.replace(".csv", "") + "-faiss_index"
+    print(project, file_name, file)
+    vectordb_file_path = os.path.join("data", project, file)
 
     embeddings = initialise()
     vectordb = FAISS.load_local(
